@@ -15,14 +15,4 @@ public class Mission {
 	public List<GlobalVote> GetGlobalVoteList(){
 		return this.globalVoteList;
 	}
-	
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
