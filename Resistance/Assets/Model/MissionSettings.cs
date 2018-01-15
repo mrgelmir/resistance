@@ -1,29 +1,53 @@
 ﻿public class MissionSettings
 {
 
-	private int maxVoteRounds;
-	private int numberOfFailsNeeded;
-	private int numberOfAttendees;
+    private int maxVoteRounds;
+    private int numberOfFailsNeeded;
+    private int numberOfAttendees;
 
-	public MissionSettings(int maxVoteRounds, int numberOfFailsNeeded, int numberOfAttendees)
-	{
-		this.maxVoteRounds = maxVoteRounds;
-		this.numberOfFailsNeeded = numberOfFailsNeeded;
-		this.numberOfAttendees = numberOfAttendees;
-	}
+    public MissionSettings(int maxVoteRounds, int numberOfFailsNeeded, int numberOfAttendees)
+    {
+        this.maxVoteRounds = maxVoteRounds;
+        this.numberOfFailsNeeded = numberOfFailsNeeded;
+        this.numberOfAttendees = numberOfAttendees;
+    }
 
-	public int GetMaxVoteRounds()
-	{
-		return this.maxVoteRounds;
-	}
+    public int NumberOfAttendees
+    {
+        get
+        {
+            return numberOfAttendees;
+        }
 
-	public int GetNumberOfFailsNeeded()
-	{
-		return this.numberOfFailsNeeded;
-	}
+        set
+        {
+            numberOfAttendees = value;
+        }
+    }
 
-	public int GetNumberOfAttendees()
-	{
-		return this.numberOfAttendees;
-	}
+    public int NumberOfFailsNeeded
+    {
+        get
+        {
+            return numberOfFailsNeeded;
+        }
+
+        set
+        {
+            numberOfFailsNeeded = value;
+        }
+    }
+
+    public int MaxVoteRounds
+    {
+        get
+        {
+            return maxVoteRounds;
+        }
+
+        set
+        {
+            maxVoteRounds = value;
+        }
+    }
 }

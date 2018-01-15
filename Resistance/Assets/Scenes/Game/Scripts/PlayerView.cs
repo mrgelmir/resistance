@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 public class PlayerView : MonoBehaviour
 {
-	[Header("Scene References")]
+	[Header("Player References")]
 	[SerializeField]
 	private Image portraitView;
 	[SerializeField]
@@ -14,6 +15,7 @@ public class PlayerView : MonoBehaviour
 	[SerializeField]
 	private TextMeshProUGUI characterNameLabel;
 
+    [Header("Views")]
 	[SerializeField]
 	private GameObject globalVoteView;
 	[SerializeField]
@@ -21,12 +23,21 @@ public class PlayerView : MonoBehaviour
 	[SerializeField]
 	private GameObject leaderPickerView;
 
+    [Header("Player Picker")]
+    [SerializeField]
+    private RectTransform playerPickerContainer;
+    [SerializeField]
+    private PlayerPickerView playerPickerPrefab;
+    [SerializeField]
+    private Button playerPickerConfirmButton;
+
 	private int playerId;
 
 	// TODO Add Actions
 
-	public System.Action<int, GameScript.GroupCompositionVoteResult> OnGlobalVote;
-	public System.Action<int, GameScript.MissionVoteResult> OnAttendeeVote;
+	public System.Action<int, GameScript.GroupCompositionVoteResult> OnTeamCompositionVote;
+	public System.Action<int, GameScript.MissionVoteResult> OnMissionVote;
+    public System.Action<List<int>> OnTeamPicked;
 
 	public void SetData(Player data)
 	{
@@ -44,32 +55,51 @@ public class PlayerView : MonoBehaviour
 		leaderPickerView.SetActive(state == ViewState.GroupAssembly);
 	}
 
-	public void AcceptVote()
+    public void PopulatePlayerPicker(List<Player> players, int requiredPlayers)
+    {
+        // Clear picker
+
+        // Populate picker
+        foreach (Player p in players)
+        {
+
+        }
+
+    }
+
+    public void AcceptVote()
 	{
-		if (OnGlobalVote != null)
-			OnGlobalVote(playerId, GameScript.GroupCompositionVoteResult.Accept);
+		if (OnTeamCompositionVote != null)
+			OnTeamCompositionVote(playerId, GameScript.GroupCompositionVoteResult.Accept);
 	}
 
 	public void DeclineVote()
 	{
-		if (OnGlobalVote != null)
-			OnGlobalVote(playerId, GameScript.GroupCompositionVoteResult.Decline);
+		if (OnTeamCompositionVote != null)
+			OnTeamCompositionVote(playerId, GameScript.GroupCompositionVoteResult.Decline);
 	}
 
 	public void SuccessVote()
 	{
-		if (OnAttendeeVote != null)
-			OnAttendeeVote(playerId, GameScript.MissionVoteResult.Success);
+		if (OnMissionVote != null)
+			OnMissionVote(playerId, GameScript.MissionVoteResult.Success);
 	}
 
 	public void FailVote()
 	{
-		if (OnAttendeeVote != null)
-			OnAttendeeVote(playerId, GameScript.MissionVoteResult.Success);
+		if (OnMissionVote != null)
+			OnMissionVote(playerId, GameScript.MissionVoteResult.Success);
 	}
+
+    public void ConfirmPlayerPicker()
+    {
+
+    }
 
 	public enum ViewState
 	{
 		Idle, GroupAssembly, GroupCompositionVote, MissionVote
 	}
+
+   
 }

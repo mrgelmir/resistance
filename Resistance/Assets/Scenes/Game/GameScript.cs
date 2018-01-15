@@ -1,55 +1,130 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameScript : MonoBehaviour
 {
 
-	[Header("Project References")]
-	public PlayerView playerViewPrefab;
+    [Header("Project References")]
+    [SerializeField]
+    private PlayerView playerViewPrefab;
 
-	[Header("Scene References")]
-	public RectTransform playerViewContainer;
+    [Header("Scene References")]
+    [SerializeField]
+    private RectTransform playerViewContainer;
 
-	private void Start()
-	{
-		GameController gc = GameController.Instance;
+    private List<PlayerView> playerViews = new List<PlayerView>();
 
-		// Clear container 
-		for (int i = 0; i < playerViewContainer.transform.childCount; i++)
-		{
-			Destroy(playerViewContainer.transform.GetChild(i).gameObject);
-		}
+    private void Start()
+    {
+        GameController.Instance.OnStateChanged += GameStateChanged;
 
-		// Fill container with data
-		foreach (Player player in gc.PlayerList)
-		{
-			// Instantiate view and populate with data
-			PlayerView v = Instantiate(playerViewPrefab);
-			v.transform.SetParent(playerViewContainer, false);
-			v.SetData(player);
+        // Clear container 
+        for (int i = 0; i < playerViewContainer.transform.childCount; i++)
+        {
+            Destroy(playerViewContainer.transform.GetChild(i).gameObject);
+        }
 
-			// Listen for player input
-			v.OnGlobalVote += CompositionVote;
-			v.OnAttendeeVote += MissionVote;
-		}
-	}
+        // Fill container with data
+        foreach (Player player in GameController.Instance.PlayerList)
+        {
+            // Instantiate view and populate with data
+            PlayerView v = Instantiate(playerViewPrefab);
+            v.transform.SetParent(playerViewContainer, false);
+            v.SetData(player);
 
-	public void CompositionVote(int playerIndex, GroupCompositionVoteResult vote)
-	{
-		print(GameController.Instance.PlayerList[playerIndex].Name + " Voted " + vote.ToString());
-	}
+            // Listen for player input
+            v.OnTeamCompositionVote += CompositionVote;
+            v.OnMissionVote += MissionVote;
 
-	public void MissionVote(int playerIndex, MissionVoteResult vote)
-	{
-		print(GameController.Instance.PlayerList[playerIndex].Name + " Voted " + vote.ToString());
-	}
+            // Set visual
+            v.SetState(PlayerView.ViewState.Idle);
 
-	// Enums for voting game logic
-	public enum GroupCompositionVoteResult
-	{ Accept, Decline }
+            playerViews.Add(v);
+        }
 
-	public enum MissionVoteResult
-	{ Success, Fail }
+        /// TODO mission views
+
+        // Start Gameplay
+        GameController.Instance.NewRound();
+    }
+
+    private void OnDestroy()
+    {
+        GameController.Instance.OnStateChanged -= GameStateChanged;
+    }
+
+    private void GameStateChanged(GameController.GameState state)
+    {
+
+        switch (state)
+        {
+            default:
+            case GameController.GameState.Default:
+                // Clear all UI
+                foreach (PlayerView v in playerViews)
+                {
+                    v.SetState(PlayerView.ViewState.Idle);
+                }
+                break;
+            case GameController.GameState.TeamAssembly:
+                foreach (PlayerView v in playerViews)
+                {
+                    v.SetState(PlayerView.ViewState.Idle);
+                }
+                playerViews[GameController.Instance.LeaderId].PopulatePlayerPicker(
+                    GameController.Instance.PlayerList,
+                    GameController.Instance.GameData.CurrentMission.Settings.NumberOfAttendees);
+                playerViews[GameController.Instance.LeaderId].SetState(PlayerView.ViewState.GroupAssembly);
+                playerViews[GameController.Instance.LeaderId].OnTeamPicked += TeamPicked;
+                break;
+            case GameController.GameState.TeamCompositionVote:
+                foreach (PlayerView v in playerViews)
+                {
+                    v.SetState(PlayerView.ViewState.GroupCompositionVote);
+                }
+                break;
+            case GameController.GameState.MissionVote:
+                Mission m = GameController.Instance.GameData.CurrentMission;
+                for (int i = 0; i < playerViews.Count; i++)
+                {
+                    if (m.MissionVoteList.Find((PlayerVote v) => { return v.PlayerID == i; }) != null)
+                    {
+                        playerViews[i].SetState(PlayerView.ViewState.MissionVote);
+                    }
+                    else
+                    {
+                        playerViews[i].SetState(PlayerView.ViewState.Idle);
+                    }
+                }
+                break;
+        }
+
+    }
+
+    public void TeamPicked(List<int> pickedPlayers)
+    {
+        // TODO data stuff
+
+        playerViews[GameController.Instance.LeaderId].OnTeamPicked -= TeamPicked;
+    }
+
+    public void CompositionVote(int playerIndex, GroupCompositionVoteResult vote)
+    {
+        print(GameController.Instance.PlayerList[playerIndex].Name + " Voted " + vote.ToString());
+    }
+
+    public void MissionVote(int playerIndex, MissionVoteResult vote)
+    {
+        print(GameController.Instance.PlayerList[playerIndex].Name + " Voted " + vote.ToString());
+    }
+
+    // Enums for voting game logic
+    public enum GroupCompositionVoteResult
+    { Accept, Decline }
+
+    public enum MissionVoteResult
+    { Success, Fail }
 
 }

@@ -2,148 +2,197 @@
 
 public class GameController
 {
-	//Global GameController
-	private static GameController instance;
 
-	// CallBacks
+    #region Singleton implementation
 
-	/// <summary>
-	/// Gets called when the player composition gets changed. This can be:
-	/// - Adding or removing a player
-	/// - Changing player data
-	/// </summary>
-	public System.Action OnPlayersChanged;
-	/// <summary>
-	/// Gets called when the game state changes and the view should update accordingly
-	/// </summary>
-	public System.Action OnStateChanged;
+    //Global GameController
+    private static GameController instance;
+    //Get instance
+    public static GameController Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new GameController();
+            }
+            return instance;
+        }
+    }
 
-	//Script objects
-	private Game gameData;
+    private GameController()
+    {
 
-	public Game GameData { get { return gameData; } }
+    }
 
-	public List<Player> PlayerList
-	{
-		get { return gameData.PlayerList; }
-		set { gameData.PlayerList = value; }
-	}
+    #endregion
 
-	//Get instance
-	public static GameController Instance
-	{
-		get
-		{
-			if (instance == null)
-			{
-				instance = new GameController();
-			}
-			return instance;
-		}
-	}
+    #region CallBacks
 
-	private GameController()
-	{
+    /// <summary>
+    /// Gets called when the player composition gets changed. This can be:
+    /// - Adding or removing a player
+    /// - Changing player data
+    /// </summary>
+    public System.Action OnPlayersChanged;
+    /// <summary>
+    /// Gets called when the game state changes and the view should update accordingly
+    /// </summary>
+    public System.Action<GameState> OnStateChanged;
 
-	}
+    #endregion
 
+    #region Data
+    private Game gameData;
+    private GameState currentState = GameState.Default;
 
-	// Flow methods
+    [System.Obsolete("Let's not use this")]
+    public Game GameData { get { return gameData; } }
 
-	public void StartRound()
-	{
-		// Assign new leader
-		gameData.CurrentLeaderId = (gameData.CurrentLeaderId += 1) % gameData.PlayerList.Count;
+    public int LeaderId
+    {
+        get { return gameData.CurrentLeaderId; }
+    }
 
-		// Activate mission
-		gameData.CurrentMission = new Mission(gameData.MissionSettingsList[gameData.CurrentMissionId]);
-		
-		if (OnStateChanged != null)
-			OnStateChanged();
-	}
+    public List<Player> PlayerList
+    {
+        get { return gameData.PlayerList; }
+        set { gameData.PlayerList = value; }
+    }
 
-	public void StartConfigurationVote()
-	{
-		// Make players able to vote for the current team configuration
+    #endregion
 
+    // Flow methods
 
+    public void NewRound()
+    {
+        // TODO test if valid 
 
-		if (OnStateChanged != null)
-			OnStateChanged();
-	}
+        // Assign new leader
+        gameData.CurrentLeaderId = (gameData.CurrentLeaderId += 1) % gameData.PlayerList.Count;
 
-	public void ConfigurationVoteComplete()
-	{
+        // Activate mission
+        gameData.CurrentMission = new Mission(gameData.MissionSettingsList[gameData.MissionList.Count]);
 
-	}
+        SetNewState(GameState.TeamAssembly);
+    }
 
-	public void StartMissionVote()
-	{
-		// 
-	}
-
-	public void MissionVoteComplete()
-	{
-		// Check if mission is a success or failure and change data
-	}
+    public void StartCompositionVote(List<int> pickedPlayers)
+    {
+        // Make players able to vote for the current team configuration
 
 
+        SetNewState(GameState.TeamCompositionVote);
+    }
 
-	/// <summary>
-	/// Add player if it doesn't exist yet
-	/// </summary>
-	/// <returns> Has the player been added succesfully </returns>
-	public bool AddPlayer(string name)
-	{
-		bool exists = false;
-		for (int i = 0; i < gameData.PlayerList.Count; i++)
-		{
-			if (gameData.PlayerList[i].Name.Equals(name))
-				exists = true;
-		}
+  
 
-		if (!name.Equals("") && !exists)
-		{
-			gameData.PlayerList.Add(new Player(gameData.PlayerList.Count, name));
-			if (OnPlayersChanged != null)
-				OnPlayersChanged();
-		}
+    public void StartMissionVote()
+    {
+        // 
+    }
 
-		return exists;
-	}
+    public void MissionVoteComplete()
+    {
+        // Add current mission to completed missions
+        gameData.MissionList.Add(gameData.CurrentMission);
+        // Check if mission is a success or failure and change data
+
+        // Remove reference to finished mission
+        gameData.CurrentMission = null;
+    }
 
 
 
+    private void SetNewState(GameState newState)
+    {
+        currentState = newState;
 
-	public void CreateGame()
-	{
-		// Create a game here, this is temporary
+        // Notify listeners of state change
+        if (OnStateChanged != null)
+            OnStateChanged(currentState);
+    }
 
-		// Init
-		gameData = new Game()
-		{
-			CurrentLeaderId = 0,
-			PlayerList = new List<Player>(),
-			MissionList = new List<Mission>(),
-			MinPlayers = 2,
-			NumberOfSpies = 1,
-			MissionSettingsList = new List<MissionSettings>()
-			{
-				new MissionSettings(5, 1, 2),
-				new MissionSettings(5, 1, 3),
-				new MissionSettings(5, 1, 2),
-				new MissionSettings(5, 1, 3),
-				new MissionSettings(5, 1, 3)
-			},
-		};
+    /// <summary>
+    /// Add player if it doesn't exist yet
+    /// </summary>
+    /// <returns> Has the player been added succesfully </returns>
+    public bool AddPlayer(string name)
+    {
+        bool exists = false;
+        for (int i = 0; i < gameData.PlayerList.Count; i++)
+        {
+            if (gameData.PlayerList[i].Name.Equals(name))
+                exists = true;
+        }
 
-		// Mission settings (should depend on amount of players)
-		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 2));
-		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 3));
-		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 2));
-		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 3));
-		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 3));
-		gameData.NumberOfMissions = gameData.MissionSettingsList.Count;
-	}
+        if (!name.Equals("") && !exists)
+        {
+            gameData.PlayerList.Add(new Player(gameData.PlayerList.Count, name));
+            if (OnPlayersChanged != null)
+                OnPlayersChanged();
+        }
 
+        return exists;
+    }
+
+    // Helper
+    public void CreateGame()
+    {
+        // Create a game here, this is temporary
+
+        // Init
+        gameData = new Game()
+        {
+            CurrentLeaderId = -1,
+            PlayerList = new List<Player>(),
+            MissionList = new List<Mission>(),
+            MinPlayers = 2,
+            NumberOfSpies = 1,
+            MissionSettingsList = new List<MissionSettings>()
+            {
+                new MissionSettings(5, 1, 2),
+                new MissionSettings(5, 1, 3),
+                new MissionSettings(5, 1, 2),
+                new MissionSettings(5, 1, 3),
+                new MissionSettings(5, 1, 3)
+            },
+        };
+
+        gameData.NumberOfMissions = gameData.MissionSettingsList.Count;
+    }
+
+    public void StartGame()
+    {
+        // Assign Roles
+        for (int i = 0; i < gameData.NumberOfSpies; i++)
+        {
+            int randomNumber = UnityEngine.Random.Range(0, gameData.PlayerList.Count);
+
+            if (gameData.PlayerList[randomNumber].GetCharacter() == Character.Spy)
+            {
+                i--;
+            }
+            else
+            {
+                gameData.PlayerList[randomNumber].SetCharacter(Character.Spy);
+            }
+        }
+
+        // TODO pseudo-randomize player order
+
+    }
+
+
+    public enum GameState
+    {
+        // everything else
+        Default,
+        // Leader picks team composition
+        TeamAssembly,
+        // Players vote for team composition
+        TeamCompositionVote,
+        // Team members vote for mission success
+        MissionVote
+    }
 }
