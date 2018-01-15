@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,20 +10,23 @@ public class PlayerView : MonoBehaviour
 	[SerializeField]
 	private Image portraitView;
 	[SerializeField]
-	private Text playerNameLabel;
+	private TextMeshProUGUI playerNameLabel;
 	[SerializeField]
-	private Text characterNameLabel;
+	private TextMeshProUGUI characterNameLabel;
 
 	[SerializeField]
 	private GameObject globalVoteView;
 	[SerializeField]
-	private GameObject AttendeesVoteView;
+	private GameObject attendeesVoteView;
 	[SerializeField]
-	private GameObject LeaderPickerView;
+	private GameObject leaderPickerView;
 
 	private int playerId;
 
 	// TODO Add Actions
+
+	public System.Action<int, GameScript.GroupCompositionVoteResult> OnGlobalVote;
+	public System.Action<int, GameScript.MissionVoteResult> OnAttendeeVote;
 
 	public void SetData(Player data)
 	{
@@ -33,14 +37,39 @@ public class PlayerView : MonoBehaviour
 		characterNameLabel.text = data.GetCharacter().ToString();
 	}
 
-	public void WinVote()
+	public void SetState(ViewState state)
 	{
-		//OnPlayerVoted(playerId, win);
+		globalVoteView.SetActive(state == ViewState.GroupCompositionVote);
+		attendeesVoteView.SetActive(state == ViewState.MissionVote);
+		leaderPickerView.SetActive(state == ViewState.GroupAssembly);
+	}
+
+	public void AcceptVote()
+	{
+		if (OnGlobalVote != null)
+			OnGlobalVote(playerId, GameScript.GroupCompositionVoteResult.Accept);
+	}
+
+	public void DeclineVote()
+	{
+		if (OnGlobalVote != null)
+			OnGlobalVote(playerId, GameScript.GroupCompositionVoteResult.Decline);
+	}
+
+	public void SuccessVote()
+	{
+		if (OnAttendeeVote != null)
+			OnAttendeeVote(playerId, GameScript.MissionVoteResult.Success);
 	}
 
 	public void FailVote()
 	{
-
+		if (OnAttendeeVote != null)
+			OnAttendeeVote(playerId, GameScript.MissionVoteResult.Success);
 	}
 
+	public enum ViewState
+	{
+		Idle, GroupAssembly, GroupCompositionVote, MissionVote
+	}
 }

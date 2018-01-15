@@ -1,24 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
-public class GlobalVote {
-	
+public class GlobalVote
+{
+
 	private List<PlayerVote> playerVoteList;
 	private int leaderID;
-	
-	public GlobalVote(int leaderID){
+
+	public GlobalVote(int leaderID)
+	{
 		this.leaderID = leaderID;
 		this.playerVoteList = new List<PlayerVote>();
 	}
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

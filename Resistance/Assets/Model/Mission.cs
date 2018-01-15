@@ -1,18 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
-public class Mission {
-	
-	private List<GlobalVote> globalVoteList;
-	private List<PlayerVote> attendeesVoteList;
-	
-	public Mission(){
-		globalVoteList = new List<GlobalVote>();
-		attendeesVoteList = new List<PlayerVote>();
+public class Mission
+{
+
+	private List<GlobalVote> globalVoteList = new List<GlobalVote>();
+	private List<PlayerVote> attendeesVoteList = new List<PlayerVote>();
+
+	private MissionSettings settings;
+
+	public Mission(MissionSettings settings)
+	{
+		this.settings = settings;
 	}
 
-	public List<GlobalVote> GetGlobalVoteList(){
-		return this.globalVoteList;
-	}
 }

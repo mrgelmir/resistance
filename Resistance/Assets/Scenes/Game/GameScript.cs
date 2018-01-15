@@ -11,7 +11,7 @@ public class GameScript : MonoBehaviour
 	[Header("Scene References")]
 	public RectTransform playerViewContainer;
 
-	void Start()
+	private void Start()
 	{
 		GameController gc = GameController.Instance;
 
@@ -20,21 +20,36 @@ public class GameScript : MonoBehaviour
 		{
 			Destroy(playerViewContainer.transform.GetChild(i).gameObject);
 		}
-			
+
 		// Fill container with data
 		foreach (Player player in gc.PlayerList)
 		{
+			// Instantiate view and populate with data
 			PlayerView v = Instantiate(playerViewPrefab);
 			v.transform.SetParent(playerViewContainer, false);
 			v.SetData(player);
 
-			// TODO: Listen for player input
+			// Listen for player input
+			v.OnGlobalVote += CompositionVote;
+			v.OnAttendeeVote += MissionVote;
 		}
 	}
 
-	public void PlayerVoted(Player p)
+	public void CompositionVote(int playerIndex, GroupCompositionVoteResult vote)
 	{
-
+		print(GameController.Instance.PlayerList[playerIndex].Name + " Voted " + vote.ToString());
 	}
+
+	public void MissionVote(int playerIndex, MissionVoteResult vote)
+	{
+		print(GameController.Instance.PlayerList[playerIndex].Name + " Voted " + vote.ToString());
+	}
+
+	// Enums for voting game logic
+	public enum GroupCompositionVoteResult
+	{ Accept, Decline }
+
+	public enum MissionVoteResult
+	{ Success, Fail }
 
 }

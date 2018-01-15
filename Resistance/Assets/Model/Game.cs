@@ -2,75 +2,21 @@
 
 public class Game
 {
-	private List<Player> playerList;
-	private List<Mission> missionList;
-	private List<MissionSettings> missionSettingsList;
-	private int numberOfMissions;
-	private int minPlayers;
-	private int numberOfSpies;
+	// Persistent data 
+	// TODO: Encapsulate to maintain state
+	public List<MissionSettings> MissionSettingsList;
+	public int NumberOfMissions;
+	public int MinPlayers;
+	public int NumberOfSpies;
 
-	public List<Player> PlayerList
-	{
-		get { return playerList; }
-		set { playerList = value; }
-	}
-
-	public List<Mission> MissionList
-	{
-		get { return missionList; }
-		set { missionList = value; }
-	}
-
-	public List<MissionSettings> MissionSettingsList
-	{
-		get
-		{
-			return missionSettingsList;
-		}
-
-		set
-		{
-			missionSettingsList = value;
-		}
-	}
-
-	public int NumberOfMissions
-	{
-		get
-		{
-			return numberOfMissions;
-		}
-
-		set
-		{
-			numberOfMissions = value;
-		}
-	}
-
-	public int MinPlayers
-	{
-		get
-		{
-			return minPlayers;
-		}
-
-		set
-		{
-			minPlayers = value;
-		}
-	}
-
-	public int NumberOfSpies
-	{
-		get
-		{
-			return numberOfSpies;
-		}
-
-		set
-		{
-			numberOfSpies = value;
-		}
-	}
+	// Changing data 
+	public List<Player> PlayerList;
+	
+	// This keeps track of game state and history
+	public List<Mission> MissionList;
+	public Mission CurrentMission;
+	public int CurrentLeaderId;
+	public int CurrentMissionId;
+	
 }
 

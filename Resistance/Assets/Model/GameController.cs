@@ -6,7 +6,17 @@ public class GameController
 	private static GameController instance;
 
 	// CallBacks
+
+	/// <summary>
+	/// Gets called when the player composition gets changed. This can be:
+	/// - Adding or removing a player
+	/// - Changing player data
+	/// </summary>
 	public System.Action OnPlayersChanged;
+	/// <summary>
+	/// Gets called when the game state changes and the view should update accordingly
+	/// </summary>
+	public System.Action OnStateChanged;
 
 	//Script objects
 	private Game gameData;
@@ -18,7 +28,6 @@ public class GameController
 		get { return gameData.PlayerList; }
 		set { gameData.PlayerList = value; }
 	}
-
 
 	//Get instance
 	public static GameController Instance
@@ -38,7 +47,52 @@ public class GameController
 
 	}
 
-	//Add player if it doesn't exist yet
+
+	// Flow methods
+
+	public void StartRound()
+	{
+		// Assign new leader
+		gameData.CurrentLeaderId = (gameData.CurrentLeaderId += 1) % gameData.PlayerList.Count;
+
+		// Activate mission
+		gameData.CurrentMission = new Mission(gameData.MissionSettingsList[gameData.CurrentMissionId]);
+		
+		if (OnStateChanged != null)
+			OnStateChanged();
+	}
+
+	public void StartConfigurationVote()
+	{
+		// Make players able to vote for the current team configuration
+
+
+
+		if (OnStateChanged != null)
+			OnStateChanged();
+	}
+
+	public void ConfigurationVoteComplete()
+	{
+
+	}
+
+	public void StartMissionVote()
+	{
+		// 
+	}
+
+	public void MissionVoteComplete()
+	{
+		// Check if mission is a success or failure and change data
+	}
+
+
+
+	/// <summary>
+	/// Add player if it doesn't exist yet
+	/// </summary>
+	/// <returns> Has the player been added succesfully </returns>
 	public bool AddPlayer(string name)
 	{
 		bool exists = false;
@@ -50,7 +104,7 @@ public class GameController
 
 		if (!name.Equals("") && !exists)
 		{
-			gameData.PlayerList.Add(new Player(name));
+			gameData.PlayerList.Add(new Player(gameData.PlayerList.Count, name));
 			if (OnPlayersChanged != null)
 				OnPlayersChanged();
 		}
@@ -58,38 +112,37 @@ public class GameController
 		return exists;
 	}
 
-	/*
-    //Each users screen is build by this function depending on the data
-	public void RefreshUserScreens(){
-		
-	}
-    */
 
-	//Button respons methods
-	//After the leader picks teams, this method is activated
-	public void LeaderPickedMissionTeam()
-	{
 
-	}
 
 	public void CreateGame()
 	{
+		// Create a game here, this is temporary
 
-		//Init
-		gameData = new Game();
-		gameData.PlayerList = new List<Player>();
-		gameData.MissionList = new List<Mission>();
-		gameData.MissionSettingsList = new List<MissionSettings>();
+		// Init
+		gameData = new Game()
+		{
+			CurrentLeaderId = 0,
+			PlayerList = new List<Player>(),
+			MissionList = new List<Mission>(),
+			MinPlayers = 2,
+			NumberOfSpies = 1,
+			MissionSettingsList = new List<MissionSettings>()
+			{
+				new MissionSettings(5, 1, 2),
+				new MissionSettings(5, 1, 3),
+				new MissionSettings(5, 1, 2),
+				new MissionSettings(5, 1, 3),
+				new MissionSettings(5, 1, 3)
+			},
+		};
 
-		//Mission settings
-		gameData.MinPlayers = 2;
-		gameData.NumberOfSpies = 1;
+		// Mission settings (should depend on amount of players)
 		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 2));
 		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 3));
 		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 2));
 		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 3));
 		gameData.MissionSettingsList.Add(new MissionSettings(5, 1, 3));
-
 		gameData.NumberOfMissions = gameData.MissionSettingsList.Count;
 	}
 

@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public enum Character { Spy, Resistance }
+﻿public enum Character { Spy, Resistance }
 
 public class Player
 {
@@ -25,7 +21,7 @@ public class Player
 
 	public int Id { get { return id; } }
 
-	public Player(string name)
+	public Player(int id, string name)
 	{
 		this.name = name;
 		this.character = Character.Resistance;

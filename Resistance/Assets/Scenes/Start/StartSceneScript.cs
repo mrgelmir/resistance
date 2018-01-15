@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StartSceneScript : MonoBehaviour
@@ -72,9 +73,7 @@ public class StartSceneScript : MonoBehaviour
 			//Set spies
 			for (int i = 0; i < gameData.NumberOfSpies; i++)
 			{
-
 				int randomNumber = Random.Range(0, gameData.PlayerList.Count);
-				print(randomNumber);
 
 				if (gameData.PlayerList[randomNumber].GetCharacter() == Character.Spy)
 				{
@@ -85,20 +84,21 @@ public class StartSceneScript : MonoBehaviour
 					gameData.PlayerList[randomNumber].SetCharacter(Character.Spy);
 				}
 			}
-			//Generate missions
-			for (int i = 0; i < gameData.MissionSettingsList.Count; i++)
-				gameData.MissionList.Add(new Mission());
 
-			//Set Leader for first votinground in first missionList (first leader is random)
-			gameData.MissionList[0].GetGlobalVoteList().Add(new GlobalVote(Random.Range(0, gameData.PlayerList.Count)));
+			////Generate missions
+			//for (int i = 0; i < gameData.MissionSettingsList.Count; i++)
+			//	gameData.MissionList.Add(new Mission());
+
+			////Set Leader for first votinground in first missionList (first leader is random)
+			//gameData.MissionList[0].GetGlobalVoteList().Add(new GlobalVote(Random.Range(0, gameData.PlayerList.Count)));
 
 			//Open game scene
-			Application.LoadLevel("game");
-
-
+			SceneManager.LoadScene("game");
 		}
 		else
+		{
 			EditorUtility.DisplayDialog("Titel", "Min. aantal spelers is " + gameData.MinPlayers + ".", "Ok", "Cancel");
+		}
 
 	}
 
