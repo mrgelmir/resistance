@@ -7,7 +7,11 @@
 
 		private Character character;
 		private string name;
-		private int id;
+		/// <summary>
+		/// The player's ID
+		/// (This should be the player's index, or we're in for a world of refactoring)
+		/// </summary>
+		private int id; 
 
 		public Character Character
 		{
@@ -25,6 +29,7 @@
 
 		public Player(int id, string name)
 		{
+			this.id = id;
 			this.name = name;
 			this.character = Character.Resistance;
 		}

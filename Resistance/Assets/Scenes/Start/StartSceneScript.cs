@@ -19,6 +19,12 @@ public class StartSceneScript : MonoBehaviour
 	{
 		GameController.Instance.CreateGame();
 		GameController.Instance.OnPlayersChanged += UpdatePlayerList;
+
+		// TEMP
+		GameController.Instance.AddPlayer("p1");
+		GameController.Instance.AddPlayer("p2");
+		GameController.Instance.AddPlayer("p3");
+		StartButton();
 	}
 
 	protected void OnDestroy()

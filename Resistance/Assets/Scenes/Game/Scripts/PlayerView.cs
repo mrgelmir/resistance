@@ -63,14 +63,23 @@ public class PlayerView : MonoBehaviour, IPlayer
 
 	public void PopulatePlayerPicker(List<Player> players, int requiredPlayers)
 	{
-		// Clear picker
+		PlayerPicker pickerHandler = new PlayerPicker(requiredPlayers, playerPickerConfirmButton);
 
-		// Populate picker
-		foreach (Player p in players)
+		// Clear picker container
+		for (int i = 0; i < playerPickerContainer.childCount; i++)
 		{
-
+			Destroy(playerPickerContainer.GetChild(i).gameObject);
 		}
 
+		// Populate picker container
+		foreach (Player p in players)
+		{
+			PlayerPickerView ppv = Instantiate(playerPickerPrefab, playerPickerContainer, false);
+			ppv.SetData(p);
+			pickerHandler.AddPlayerPickerView(ppv);
+		}
+
+		pickerHandler.OnComplete += ConfirmPlayerPicker;
 	}
 
 	#endregion
@@ -99,12 +108,96 @@ public class PlayerView : MonoBehaviour, IPlayer
 			OnMissionVote(playerId, GameScript.MissionVoteResult.Success);
 	}
 
-	public void ConfirmPlayerPicker()
+	public void ConfirmPlayerPicker(List<int> selectedIndices)
 	{
-
+		if (OnTeamPicked != null)
+			OnTeamPicked(selectedIndices);
 	}
 
-	
+	/// <summary>
+	/// A class responsible for evaluating the picking of players
+	/// Should be disposed when picking is complete
+	/// </summary>
+	private class PlayerPicker
+	{
+		public System.Action<List<int>> OnComplete;
+
+		private int requiredPlayerCount;
+		private Button confirmButton; // I do not like this button being here
+		private List<PlayerPickerView> playerPickerViews = new List<PlayerPickerView>();
+		private List<int> selectedPlayerIndices;
+
+		public PlayerPicker(int requiredPlayers, Button confirmButton)
+		{
+			requiredPlayerCount = requiredPlayers;
+			this.confirmButton = confirmButton;
+			selectedPlayerIndices = new List<int>(requiredPlayers);
+
+			confirmButton.onClick.AddListener(Finish);
+
+			UpdateViews();
+		}
+
+		public void AddPlayerPickerView(PlayerPickerView view)
+		{
+			playerPickerViews.Add(view);
+			view.OnSelected += OnPlayerSelected;
+			view.OnDeselected += OnPlayerDeselected;
+		}
+
+		private void OnPlayerSelected(int playerIndex)
+		{
+			selectedPlayerIndices.Add(playerIndex);
+			UpdateViews();
+		}
+
+		private void OnPlayerDeselected(int playerIndex)
+		{
+			selectedPlayerIndices.Remove(playerIndex);
+			UpdateViews();
+		}
+
+		private void UpdateViews()
+		{
+			bool RequiredPlayersReached = selectedPlayerIndices.Count == requiredPlayerCount;
+
+			// Enable/Disable toggles
+			if (RequiredPlayersReached)
+			{
+				for (int i = 0; i < playerPickerViews.Count; i++)
+				{
+					playerPickerViews[i].SetInteractibility(selectedPlayerIndices.Contains(i));
+				}
+			}
+			else
+			{
+				foreach (PlayerPickerView ppv in playerPickerViews)
+				{
+					ppv.SetInteractibility(true);
+				}
+			}
+
+			// Enable/Disable confirmation button
+			confirmButton.interactable = RequiredPlayersReached;
+		}
+
+		private void Finish()
+		{
+			// Unsubscribe from everything
+			confirmButton.onClick.RemoveListener(Finish);
+
+			foreach (PlayerPickerView ppv in playerPickerViews)
+			{
+				ppv.OnSelected -= OnPlayerSelected;
+				ppv.OnDeselected -= OnPlayerDeselected;
+			}
+
+			if (OnComplete != null)
+				OnComplete(selectedPlayerIndices);
+			else
+				Debug.LogWarning("PlayerPicker: Finished picking players without a listener");
+		}
+	}
 
 
 }

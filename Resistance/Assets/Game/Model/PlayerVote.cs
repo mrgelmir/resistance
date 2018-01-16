@@ -3,14 +3,19 @@
 	public class PlayerVote
 	{
 
-		private bool vote;
-		private bool voted;
-		private int playerID;
+		public bool Vote = false;
+		public bool Voted = false;
+		public int PlayerID = -1;
 
-		public int PlayerID
+		public PlayerVote(int playerId)
 		{
-			get { return playerID; }
-			set { playerID = value; }
+			PlayerID = playerId;			
+		}
+
+		public void PlaceVote(bool vote)
+		{
+			Vote = vote;
+			Voted = true;
 		}
 	}
 

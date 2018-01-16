@@ -10,6 +10,29 @@
 
 		private MissionSettings settings;
 
+
+		public List<GlobalVote> TeamCompositionVoteList
+		{
+			get { return teamCompositionVoteList; }
+			set { teamCompositionVoteList = value; }
+		}
+
+		public List<PlayerVote> MissionVoteList
+		{
+			get { return missionVoteList; }
+			set { missionVoteList = value; }
+		}
+
+		public GlobalVote CurrentTeamCompositionVote
+		{
+			get
+			{
+				return TeamCompositionVoteList.Count > 0 ?
+				  TeamCompositionVoteList[TeamCompositionVoteList.Count - 1] :
+				  null;
+			}
+		}
+
 		public MissionSettings Settings
 		{
 			get { return settings; }
@@ -20,13 +43,6 @@
 		{
 			this.settings = settings;
 		}
-
-		public List<PlayerVote> MissionVoteList
-		{
-			get { return missionVoteList; }
-			set { missionVoteList = value; }
-		}
-
 
 	}
 

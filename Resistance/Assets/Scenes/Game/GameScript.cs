@@ -62,7 +62,7 @@ public class GameScript : MonoBehaviour
 
     private void GameStateChanged(GameController.GameState state)
     {
-
+		print("New game state is " + state.ToString());
         switch (state)
         {
             default:
@@ -85,6 +85,8 @@ public class GameScript : MonoBehaviour
                 playerViews[GameController.Instance.LeaderId].OnTeamPicked += TeamPicked;
                 break;
             case GameController.GameState.TeamCompositionVote:
+				// TODO show mission view stuff here
+
                 foreach (IPlayer v in playerViews)
                 {
                     v.SetState(IPlayerState.GroupCompositionVote);
@@ -104,25 +106,34 @@ public class GameScript : MonoBehaviour
                     }
                 }
                 break;
+			case GameController.GameState.Finished:
+				// TODO: Display who won
+				print("Game is finished");
+				break;
         }
 
     }
 
     public void TeamPicked(List<int> pickedPlayers)
     {
-        // TODO data stuff
-
+		// Unsubscribe (maybe clean up too?)
         playerViews[GameController.Instance.LeaderId].OnTeamPicked -= TeamPicked;
+		
+		// Inform game controller
+		GameController.Instance.StartCompositionVote(pickedPlayers);
+
     }
 
     public void CompositionVote(int playerIndex, GroupCompositionVoteResult vote)
     {
-        print(GameController.Instance.PlayerList[playerIndex].Name + " Voted " + vote.ToString());
+		GameController.Instance.TeamCompositionVote(playerIndex, vote == GroupCompositionVoteResult.Accept);
+		playerViews[playerIndex].SetState(IPlayerState.Idle);
     }
 
     public void MissionVote(int playerIndex, MissionVoteResult vote)
     {
-        print(GameController.Instance.PlayerList[playerIndex].Name + " Voted " + vote.ToString());
+		GameController.Instance.MissionVote(playerIndex, vote == MissionVoteResult.Success);
+		playerViews[playerIndex].SetState(IPlayerState.Idle);
     }
 
     // Enums for voting game logic
