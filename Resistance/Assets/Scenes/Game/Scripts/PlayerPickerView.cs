@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using Resistance.Game.Model;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 

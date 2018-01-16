@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Resistance.Client;
+using Resistance.Game.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,13 +10,14 @@ public class GameScript : MonoBehaviour
 
     [Header("Project References")]
     [SerializeField]
+	// TODO: abstract this to another class
     private PlayerView playerViewPrefab;
 
     [Header("Scene References")]
     [SerializeField]
     private RectTransform playerViewContainer;
 
-    private List<PlayerView> playerViews = new List<PlayerView>();
+    private List<IPlayer> playerViews = new List<IPlayer>();
 
     private void Start()
     {
@@ -29,6 +32,8 @@ public class GameScript : MonoBehaviour
         // Fill container with data
         foreach (Player player in GameController.Instance.PlayerList)
         {
+			// TODO: move the instantiation part elsewhere: final version will have players as clients, not views
+
             // Instantiate view and populate with data
             PlayerView v = Instantiate(playerViewPrefab);
             v.transform.SetParent(playerViewContainer, false);
@@ -39,7 +44,7 @@ public class GameScript : MonoBehaviour
             v.OnMissionVote += MissionVote;
 
             // Set visual
-            v.SetState(PlayerView.ViewState.Idle);
+            v.SetState(IPlayerState.Idle);
 
             playerViews.Add(v);
         }
@@ -63,39 +68,39 @@ public class GameScript : MonoBehaviour
             default:
             case GameController.GameState.Default:
                 // Clear all UI
-                foreach (PlayerView v in playerViews)
+                foreach (IPlayer v in playerViews)
                 {
-                    v.SetState(PlayerView.ViewState.Idle);
+                    v.SetState(IPlayerState.Idle);
                 }
                 break;
             case GameController.GameState.TeamAssembly:
-                foreach (PlayerView v in playerViews)
+                foreach (IPlayer v in playerViews)
                 {
-                    v.SetState(PlayerView.ViewState.Idle);
+                    v.SetState(IPlayerState.Idle);
                 }
                 playerViews[GameController.Instance.LeaderId].PopulatePlayerPicker(
                     GameController.Instance.PlayerList,
-                    GameController.Instance.GameData.CurrentMission.Settings.NumberOfAttendees);
-                playerViews[GameController.Instance.LeaderId].SetState(PlayerView.ViewState.GroupAssembly);
+                    GameController.Instance.CurrentMission.Settings.NumberOfAttendees);
+                playerViews[GameController.Instance.LeaderId].SetState(IPlayerState.GroupAssembly);
                 playerViews[GameController.Instance.LeaderId].OnTeamPicked += TeamPicked;
                 break;
             case GameController.GameState.TeamCompositionVote:
-                foreach (PlayerView v in playerViews)
+                foreach (IPlayer v in playerViews)
                 {
-                    v.SetState(PlayerView.ViewState.GroupCompositionVote);
+                    v.SetState(IPlayerState.GroupCompositionVote);
                 }
                 break;
             case GameController.GameState.MissionVote:
-                Mission m = GameController.Instance.GameData.CurrentMission;
+                Mission m = GameController.Instance.CurrentMission;
                 for (int i = 0; i < playerViews.Count; i++)
                 {
                     if (m.MissionVoteList.Find((PlayerVote v) => { return v.PlayerID == i; }) != null)
                     {
-                        playerViews[i].SetState(PlayerView.ViewState.MissionVote);
+                        playerViews[i].SetState(IPlayerState.MissionVote);
                     }
                     else
                     {
-                        playerViews[i].SetState(PlayerView.ViewState.Idle);
+                        playerViews[i].SetState(IPlayerState.Idle);
                     }
                 }
                 break;

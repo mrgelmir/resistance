@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Resistance.Client;
+using Resistance.Game.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerView : MonoBehaviour
+public class PlayerView : MonoBehaviour, IPlayer
 {
 	[Header("Player References")]
 	[SerializeField]
@@ -15,7 +17,7 @@ public class PlayerView : MonoBehaviour
 	[SerializeField]
 	private TextMeshProUGUI characterNameLabel;
 
-    [Header("Views")]
+	[Header("Views")]
 	[SerializeField]
 	private GameObject globalVoteView;
 	[SerializeField]
@@ -23,21 +25,25 @@ public class PlayerView : MonoBehaviour
 	[SerializeField]
 	private GameObject leaderPickerView;
 
-    [Header("Player Picker")]
-    [SerializeField]
-    private RectTransform playerPickerContainer;
-    [SerializeField]
-    private PlayerPickerView playerPickerPrefab;
-    [SerializeField]
-    private Button playerPickerConfirmButton;
+	[Header("Player Picker")]
+	[SerializeField]
+	private RectTransform playerPickerContainer;
+	[SerializeField]
+	private PlayerPickerView playerPickerPrefab;
+	[SerializeField]
+	private Button playerPickerConfirmButton;
 
 	private int playerId;
 
-	// TODO Add Actions
 
-	public System.Action<int, GameScript.GroupCompositionVoteResult> OnTeamCompositionVote;
-	public System.Action<int, GameScript.MissionVoteResult> OnMissionVote;
-    public System.Action<List<int>> OnTeamPicked;
+	// Actions
+
+	#region IPlayer interface implementation
+
+	public event Action<int, GameScript.GroupCompositionVoteResult> OnTeamCompositionVote;
+	public event Action<int, GameScript.MissionVoteResult> OnMissionVote;
+	public event Action<List<int>> OnTeamPicked;
+
 
 	public void SetData(Player data)
 	{
@@ -48,26 +54,28 @@ public class PlayerView : MonoBehaviour
 		characterNameLabel.text = data.GetCharacter().ToString();
 	}
 
-	public void SetState(ViewState state)
+	public void SetState(IPlayerState state)
 	{
-		globalVoteView.SetActive(state == ViewState.GroupCompositionVote);
-		attendeesVoteView.SetActive(state == ViewState.MissionVote);
-		leaderPickerView.SetActive(state == ViewState.GroupAssembly);
+		globalVoteView.SetActive(state == IPlayerState.GroupCompositionVote);
+		attendeesVoteView.SetActive(state == IPlayerState.MissionVote);
+		leaderPickerView.SetActive(state == IPlayerState.GroupAssembly);
 	}
 
-    public void PopulatePlayerPicker(List<Player> players, int requiredPlayers)
-    {
-        // Clear picker
+	public void PopulatePlayerPicker(List<Player> players, int requiredPlayers)
+	{
+		// Clear picker
 
-        // Populate picker
-        foreach (Player p in players)
-        {
+		// Populate picker
+		foreach (Player p in players)
+		{
 
-        }
+		}
 
-    }
+	}
 
-    public void AcceptVote()
+	#endregion
+
+	public void AcceptVote()
 	{
 		if (OnTeamCompositionVote != null)
 			OnTeamCompositionVote(playerId, GameScript.GroupCompositionVoteResult.Accept);
@@ -91,15 +99,12 @@ public class PlayerView : MonoBehaviour
 			OnMissionVote(playerId, GameScript.MissionVoteResult.Success);
 	}
 
-    public void ConfirmPlayerPicker()
-    {
-
-    }
-
-	public enum ViewState
+	public void ConfirmPlayerPicker()
 	{
-		Idle, GroupAssembly, GroupCompositionVote, MissionVote
+
 	}
 
-   
+	
+
+
 }
