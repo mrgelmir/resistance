@@ -9,6 +9,7 @@ public class CharacterPickerView : MonoBehaviour
 	[SerializeField]
 	private RectTransform container;
 
+	private string selectedCharacterID = "";
 
 	protected void Start()
 	{
@@ -19,20 +20,40 @@ public class CharacterPickerView : MonoBehaviour
 
 	public string GetSelectedCharacterId()
 	{
-		return "";
+		return selectedCharacterID;
+	}
+
+	private void SetSelectedCharacterID(string selectedCharacter)
+	{
+		print("new selected character id is " + selectedCharacter);
+
 	}
 
 	private void UpdateView()
 	{
-		// Clear container
+		// TODOE: Clear container
 
+		var toggleGroup = container.GetComponent<ToggleGroup>();
 
 		// Add Portraits to container
 		foreach (CharacterData cd in group.Characters)
 		{
 			GameObject go = new GameObject(cd.CharacterName);
-			go.AddComponent<RectTransform>();
-			go.AddComponent<Image>();
+			go.AddComponent<RectTransform>().SetParent(container, false);
+			var image = go.AddComponent<Image>();
+			image.sprite = cd.CharacterPortrait;
+			image.preserveAspect = true;
+			var toggle = go.AddComponent<Toggle>();
+			toggle.onValueChanged.AddListener((bool selected) =>
+			{
+				if (selected)
+				{
+					SetSelectedCharacterID(cd.CharacterID);
+				}
+			});
+
+			toggleGroup.RegisterToggle(toggle);
 		}
+
 	}
 }

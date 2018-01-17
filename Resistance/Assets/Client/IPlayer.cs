@@ -11,9 +11,7 @@ namespace Resistance.Client
 
 		void PopulatePlayerPicker(List<Player> players, int requiredPlayers);
 		void SetData(Player data);
-		void SetState(IPlayerState state);
-
-		
+		void SetState(IPlayerState state);		
 	}
 
 	public enum IPlayerState

@@ -24,7 +24,7 @@ public class StartSceneScript : MonoBehaviour
 		GameController.Instance.AddPlayer("p1");
 		GameController.Instance.AddPlayer("p2");
 		GameController.Instance.AddPlayer("p3");
-		StartButton();
+		//StartButton();
 	}
 
 	protected void OnDestroy()
