@@ -126,14 +126,14 @@ public class GameScript : MonoBehaviour
 
     public void CompositionVote(int playerIndex, GroupCompositionVoteResult vote)
     {
-		GameController.Instance.TeamCompositionVote(playerIndex, vote == GroupCompositionVoteResult.Accept);
 		playerViews[playerIndex].SetState(IPlayerState.Idle);
+		GameController.Instance.TeamCompositionVote(playerIndex, vote == GroupCompositionVoteResult.Accept);
     }
 
     public void MissionVote(int playerIndex, MissionVoteResult vote)
     {
-		GameController.Instance.MissionVote(playerIndex, vote == MissionVoteResult.Success);
 		playerViews[playerIndex].SetState(IPlayerState.Idle);
+		GameController.Instance.MissionVote(playerIndex, vote == MissionVoteResult.Success);
     }
 
     // Enums for voting game logic

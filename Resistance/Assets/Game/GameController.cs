@@ -281,22 +281,20 @@ public class GameController
 		{
 			int randomNumber = UnityEngine.Random.Range(0, gameData.PlayerList.Count);
 
-			if (gameData.PlayerList[randomNumber].GetCharacter() == Character.Spy)
+			if (gameData.PlayerList[randomNumber].GetCharacter() == CharacterRole.Spy)
 			{
 				i--;
 			}
 			else
 			{
-				gameData.PlayerList[randomNumber].SetCharacter(Character.Spy);
+				gameData.PlayerList[randomNumber].SetCharacter(CharacterRole.Spy);
 			}
 		}
 
 		// TODO pseudo-randomize player order
 
 	}
-
-
-
+	
 	public enum GameState
 	{
 		// everything else

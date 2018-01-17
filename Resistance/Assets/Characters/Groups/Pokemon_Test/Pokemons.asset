@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4368961627470f64db3d123f0bc5fc2a, type: 3}
+  m_Name: Pokemons
+  m_EditorClassIdentifier: 
+  groupName: Test Pokemons
+  groupDescription: A test group containing of mostly, if not only, pokemon
+  groupLogo: {fileID: 21300000, guid: 768a78b30982a2240a09737e52671db0, type: 3}
+  characters:
+  - {fileID: 11400000, guid: 098d128a8a6337745bf443f88999abfe, type: 2}
+  - {fileID: 11400000, guid: e7ef99d018dd1354e85d642f84b7cfb2, type: 2}
+  - {fileID: 11400000, guid: ed915bd7824bc8a479f5c0171e31a3e9, type: 2}
+  - {fileID: 11400000, guid: a1354e4bb03064d4e904769294ccb95d, type: 2}

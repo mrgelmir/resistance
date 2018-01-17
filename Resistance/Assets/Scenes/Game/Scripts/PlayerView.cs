@@ -1,4 +1,5 @@
-﻿using Resistance.Client;
+﻿using Resistance.Characters;
+using Resistance.Client;
 using Resistance.Game.Model;
 using System;
 using System.Collections;
@@ -33,8 +34,14 @@ public class PlayerView : MonoBehaviour, IPlayer
 	[SerializeField]
 	private Button playerPickerConfirmButton;
 
-	private int playerId;
+	[Header("Visual")]
+	[SerializeField]
+	// Reference to the charactergroup where this view will get its visuals from. 
+	// Should be passed to this view on startup later
+	private CharacterGroup characterGroup; 
 
+	// Reference to the player this view represents
+	private int playerId;
 
 	// Actions
 
@@ -43,8 +50,7 @@ public class PlayerView : MonoBehaviour, IPlayer
 	public event Action<int, GameScript.GroupCompositionVoteResult> OnTeamCompositionVote;
 	public event Action<int, GameScript.MissionVoteResult> OnMissionVote;
 	public event Action<List<int>> OnTeamPicked;
-
-
+	
 	public void SetData(Player data)
 	{
 		playerId = data.Id;
@@ -105,7 +111,7 @@ public class PlayerView : MonoBehaviour, IPlayer
 	public void FailVote()
 	{
 		if (OnMissionVote != null)
-			OnMissionVote(playerId, GameScript.MissionVoteResult.Success);
+			OnMissionVote(playerId, GameScript.MissionVoteResult.Fail);
 	}
 
 	public void ConfirmPlayerPicker(List<int> selectedIndices)

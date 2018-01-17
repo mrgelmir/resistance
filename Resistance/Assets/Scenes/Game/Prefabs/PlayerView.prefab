@@ -817,6 +817,7 @@ MonoBehaviour:
   playerPickerPrefab: {fileID: 114092732036774822, guid: 9a88a12b90d49f747a590a2764c84b05,
     type: 2}
   playerPickerConfirmButton: {fileID: 114122279623234296}
+  characterGroup: {fileID: 11400000, guid: bcfbb9e3b8614a746a1e4d8674351854, type: 2}
 --- !u!114 &114435309145509492
 MonoBehaviour:
   m_ObjectHideFlags: 1
