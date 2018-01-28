@@ -35,10 +35,7 @@ public class PlayerView : MonoBehaviour, IPlayer
 	[SerializeField]
 	private Button playerPickerConfirmButton;
 
-	[Header("Visual")]
-	[SerializeField]
-	// Reference to the charactergroup where this view will get its visuals from. 
-	// Should be passed to this view on startup later
+	// Reference to the charactergroup where this view will get its visuals from.
 	private CharacterGroup characterGroup; 
 
 	// Reference to the player this view represents
@@ -52,13 +49,22 @@ public class PlayerView : MonoBehaviour, IPlayer
 	public event Action<int, GameScript.MissionVoteResult> OnMissionVote;
 	public event Action<List<int>> OnTeamPicked;
 	
+	public void SetCharacterGroup(CharacterGroup characterGroup)
+	{
+		this.characterGroup = characterGroup;
+	}
+
 	public void SetData(Player data)
 	{
+		// Save id for later use
 		playerId = data.Id;
 
-		//portraitView = data.
+		// Set gameplay data
 		playerNameLabel.text = data.GetName();
 		characterNameLabel.text = data.GetCharacter().ToString();
+
+		// Set visuals
+		portraitView.sprite = characterGroup.GetCharacter(data.CharacterId).CharacterPortrait;
 	}
 
 	public void SetState(IPlayerState state)

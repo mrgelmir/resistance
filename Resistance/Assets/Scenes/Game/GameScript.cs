@@ -1,8 +1,7 @@
-﻿using Resistance.Client;
+﻿using Resistance.Characters;
+using Resistance.Client;
 using Resistance.Game.Model;
 using Resistance.Helpers;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,30 +19,46 @@ public class GameScript : MonoBehaviour
 	[SerializeField]
 	private TMPro.TextMeshProUGUI debugLabel;
 
+	[Header("Visual")]
+	[SerializeField]
+	// TODO: This should be moved elsewhere
+	private CharacterGroup defaultCharacterGroup;
+
+	/// <summary>
+	/// For now this is passed through data, but might change later
+	/// So let's chache it here
+	/// </summary>
+	private CharacterGroup characterGroup;
 	private List<IPlayer> playerViews = new List<IPlayer>();
 
 	private void Start()
 	{
 		// Check if game is initialized, if not, create a mock game
-		// TODO automise this
+		// TODO: automise this
 		if (!GameController.Instance.Initialized)
 		{
 			GameController.Instance.CreateMockGame();
 		}
 
+		// Cache the character group or use default if not available
+		characterGroup = GameController.Instance.GameData.CharacterGoup;
+		if (characterGroup == null)
+			characterGroup = defaultCharacterGroup;
+
+		// Subscribe to desired events
 		GameController.Instance.OnStateChanged += GameStateChanged;
-
-		// Clear container 
+		
+		// Clear container and fill with data
 		playerViewContainer.DestroyChildren();
-
-		// Fill container with data
 		foreach (Player player in GameController.Instance.PlayerList)
 		{
 			// TODO: move the instantiation part elsewhere: final version will have players as clients, not views
 
 			// Instantiate view and populate with data
-			PlayerView v = Instantiate(playerViewPrefab);
-			v.transform.SetParent(playerViewContainer, false);
+			PlayerView v = Instantiate(playerViewPrefab, playerViewContainer, false);
+
+			// TODO: this isn't decoupled for now, but should be handled by a player handler 
+			v.SetCharacterGroup(characterGroup);
 			v.SetData(player);
 
 			// Listen for player input

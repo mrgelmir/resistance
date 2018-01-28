@@ -303,7 +303,7 @@ MonoBehaviour:
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
   m_isInputParsingRequired: 0
-  m_inputSource: 3
+  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
   - {fileID: 0}
@@ -353,6 +353,8 @@ MonoBehaviour:
     type: 2}
   playerViewContainer: {fileID: 290680592}
   debugLabel: {fileID: 823040791}
+  defaultCharacterGroup: {fileID: 11400000, guid: bcfbb9e3b8614a746a1e4d8674351854,
+    type: 2}
 --- !u!4 &998366505
 Transform:
   m_ObjectHideFlags: 0
