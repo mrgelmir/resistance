@@ -1,59 +1,73 @@
-﻿using Resistance.Characters;
+﻿using Resistance.Helpers;
+using Resistance.Characters;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterPickerView : MonoBehaviour
+namespace Resistance.Scenes.Start
 {
-	[SerializeField]
-	private CharacterGroup group;
-	[SerializeField]
-	private RectTransform container;
-
-	private string selectedCharacterID = "";
-
-	protected void Start()
+	public class CharacterPickerView : MonoBehaviour
 	{
-		UpdateView();
+		[Header("Scene References")]
+		[SerializeField]
+		private RectTransform container;
+		[SerializeField]
+		private ToggleGroup toggleGroup;
 
-		// Select first character
-	}
+		[Header("Project References")]
+		[SerializeField]
+		private CharacterDataView dataViewPrefab;
 
-	public string GetSelectedCharacterId()
-	{
-		return selectedCharacterID;
-	}
+		private CharacterGroup group = null;
 
-	private void SetSelectedCharacterID(string selectedCharacter)
-	{
-		print("new selected character id is " + selectedCharacter);
+		private string selectedCharacterID = "";
 
-	}
-
-	private void UpdateView()
-	{
-		// TODOE: Clear container
-
-		var toggleGroup = container.GetComponent<ToggleGroup>();
-
-		// Add Portraits to container
-		foreach (CharacterData cd in group.Characters)
+		protected void Start()
 		{
-			GameObject go = new GameObject(cd.CharacterName);
-			go.AddComponent<RectTransform>().SetParent(container, false);
-			var image = go.AddComponent<Image>();
-			image.sprite = cd.CharacterPortrait;
-			image.preserveAspect = true;
-			var toggle = go.AddComponent<Toggle>();
-			toggle.onValueChanged.AddListener((bool selected) =>
-			{
-				if (selected)
-				{
-					SetSelectedCharacterID(cd.CharacterID);
-				}
-			});
-
-			toggleGroup.RegisterToggle(toggle);
+			UpdateView();
 		}
 
+		public void SetCharacterGroup(CharacterGroup characterGroup)
+		{
+			group = characterGroup;
+			UpdateView();
+		}
+
+		public string GetSelectedCharacterId()
+		{
+			return selectedCharacterID;
+		}
+
+		private void SetSelectedCharacterID(string selectedCharacter)
+		{
+			//print("new selected character id is " + selectedCharacter);
+			selectedCharacterID = selectedCharacter;
+		}
+
+		private void UpdateView()
+		{
+			// Clear container
+			container.DestroyChildren();
+
+			if (group == null)
+				return;
+
+			// Add Portraits to container
+			foreach (CharacterData cd in group.Characters)
+			{
+				CharacterDataView view = Instantiate(dataViewPrefab, container, false);
+				view.SetData(cd);
+
+				view.Toggle.group = toggleGroup;
+				view.Toggle.isOn = false;
+				view.Toggle.onValueChanged.AddListener((bool selected) =>
+				{
+					if (selected)
+					{
+						SetSelectedCharacterID(cd.CharacterID);
+					}
+				});
+			}
+		}
 	}
+
 }

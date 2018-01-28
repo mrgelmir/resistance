@@ -2,7 +2,7 @@
 {
 	using System.Collections.Generic;
 
-	public class Game
+	public class GameData
 	{
 		// Persistent data 
 		// TODO: Encapsulate to maintain state
@@ -19,6 +19,9 @@
 		public Mission CurrentMission;
 		public int CurrentLeaderId;
 		public int CurrentMissionId;
+
+		// Visuals: No clue how to handle this in a final version for now
+		public Characters.CharacterGroup CharacterGoup;
 
 	}
 

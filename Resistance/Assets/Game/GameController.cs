@@ -44,11 +44,11 @@ public class GameController
 	#endregion
 
 	#region Data
-	private Game gameData;
+	private GameData gameData;
 	private GameState currentState = GameState.Default;
 
 	//[System.Obsolete("Let's not use this, unless temporarily")]
-	public Game GameData { get { return gameData; } }
+	public GameData GameData { get { return gameData; } }
 
 
 	public bool Initialized
@@ -236,18 +236,21 @@ public class GameController
 	/// Add player if it doesn't exist yet
 	/// </summary>
 	/// <returns> Has the player been added succesfully </returns>
-	public bool AddPlayer(string name)
+	public bool AddPlayer(string playerName, string characterId)
 	{
 		bool valid = true;
 		for (int i = 0; i < gameData.PlayerList.Count; i++)
 		{
-			if (gameData.PlayerList[i].Name.Equals(name))
+			if (gameData.PlayerList[i].PlayerName.Equals(playerName))
 				valid = false;
 		}
 
-		if (!name.Equals("") && valid)
+		if (!string.IsNullOrEmpty(playerName) && valid)
 		{
-			gameData.PlayerList.Add(new Player(gameData.PlayerList.Count, name));
+			Player newPlayer = new Player(gameData.PlayerList.Count, playerName);
+			newPlayer.CharacterId = characterId;
+
+			gameData.PlayerList.Add(newPlayer);
 			if (OnPlayersChanged != null)
 				OnPlayersChanged();
 		}
@@ -261,7 +264,7 @@ public class GameController
 		// Create a game here, this is temporary, should use player count and such
 
 		// Init
-		gameData = new Game()
+		gameData = new GameData()
 		{
 			CurrentLeaderId = -1,
 			PlayerList = new List<Player>(),
@@ -287,15 +290,20 @@ public class GameController
 	public void CreateMockGame()
 	{
 		CreateGame();
-		AddPlayer("p1");
-		AddPlayer("p2");
-		AddPlayer("p3");
-		AddPlayer("p4");
+		AddPlayer("p1", "c0");
+		AddPlayer("p2", "c1");
+		AddPlayer("p3", "c2");
+		AddPlayer("p4", "c3");
 		StartGame();
 	}
 
+	/// <summary>
+	/// Take all data provided to the GameData and put it into the starting game state
+	/// </summary>
 	public void StartGame()
 	{
+		// TODO: Check if game isn't already started
+
 		// Assign Roles
 		for (int i = 0; i < gameData.NumberOfSpies; i++)
 		{
@@ -311,7 +319,7 @@ public class GameController
 			}
 		}
 
-		// TODO pseudo-randomize player order
+		// TODO: Pseudo-randomize player order
 
 	}
 	

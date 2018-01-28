@@ -1368,6 +1368,7 @@ MonoBehaviour:
   playerInput: {fileID: 1176345492}
   playerListView: {fileID: 557604365}
   startButton: {fileID: 2096410055}
+  characterPickerView: {fileID: 1875361702}
 --- !u!4 &1372567390
 Transform:
   m_ObjectHideFlags: 0
@@ -1449,7 +1450,7 @@ MonoBehaviour:
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
+  m_ChildControlHeight: 1
 --- !u!1 &1514453444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1849,6 +1850,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   group: {fileID: 11400000, guid: bcfbb9e3b8614a746a1e4d8674351854, type: 2}
   container: {fileID: 1396459270}
+  toggleGroup: {fileID: 1396459271}
+  dataViewPrefab: {fileID: 114743482776068802, guid: 7f8d8aeb99929a944b97b9c682b2216b,
+    type: 2}
 --- !u!1 &2096410053
 GameObject:
   m_ObjectHideFlags: 0

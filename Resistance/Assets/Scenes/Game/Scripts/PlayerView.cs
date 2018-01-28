@@ -1,6 +1,7 @@
 ﻿using Resistance.Characters;
 using Resistance.Client;
 using Resistance.Game.Model;
+using Resistance.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -72,10 +73,7 @@ public class PlayerView : MonoBehaviour, IPlayer
 		PlayerPicker pickerHandler = new PlayerPicker(requiredPlayers, playerPickerConfirmButton);
 
 		// Clear picker container
-		for (int i = 0; i < playerPickerContainer.childCount; i++)
-		{
-			Destroy(playerPickerContainer.GetChild(i).gameObject);
-		}
+		playerPickerContainer.DestroyChildren();
 
 		// Populate picker container
 		foreach (Player p in players)

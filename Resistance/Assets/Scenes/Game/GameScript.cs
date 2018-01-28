@@ -1,5 +1,6 @@
 ﻿using Resistance.Client;
 using Resistance.Game.Model;
+using Resistance.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,10 +34,7 @@ public class GameScript : MonoBehaviour
 		GameController.Instance.OnStateChanged += GameStateChanged;
 
 		// Clear container 
-		for (int i = 0; i < playerViewContainer.transform.childCount; i++)
-		{
-			Destroy(playerViewContainer.transform.GetChild(i).gameObject);
-		}
+		playerViewContainer.DestroyChildren();
 
 		// Fill container with data
 		foreach (Player player in GameController.Instance.PlayerList)

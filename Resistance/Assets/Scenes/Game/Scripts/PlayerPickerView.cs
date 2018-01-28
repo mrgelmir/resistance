@@ -19,7 +19,7 @@ public class PlayerPickerView : MonoBehaviour
 	{
 		playerIndex = player.Id;
 
-		nameLabel.text = player.Name;
+		nameLabel.text = player.PlayerName;
 		toggle.isOn = false;
 	}
 

@@ -7,7 +7,7 @@
 		/// <summary>
 		/// The id of the character, which will be used for getting visuals
 		/// </summary>
-		private string characterId;
+		public string CharacterId;
 
 		/// <summary>
 		/// The role the character has.
@@ -23,8 +23,9 @@
 		/// <summary>
 		/// The player's ID
 		/// (This should be the player's index, or we're in for a world of refactoring)
+		/// (but it would be more robust ... )
 		/// </summary>
-		private int id; 
+		private int id;
 
 		public CharacterRole CharacterRole
 		{
@@ -32,7 +33,7 @@
 			set { character = value; }
 		}
 
-		public string Name
+		public string PlayerName
 		{
 			get { return playerName; }
 			set { playerName = value; }
