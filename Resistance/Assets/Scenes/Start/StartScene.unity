@@ -740,7 +740,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1149524689}
   m_Direction: 0
   m_Value: 0
-  m_Size: 1
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1369,6 +1369,7 @@ MonoBehaviour:
   playerListView: {fileID: 557604365}
   startButton: {fileID: 2096410055}
   characterPickerView: {fileID: 1875361702}
+  characterGroup: {fileID: 11400000, guid: bcfbb9e3b8614a746a1e4d8674351854, type: 2}
 --- !u!4 &1372567390
 Transform:
   m_ObjectHideFlags: 0
@@ -1848,7 +1849,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 934ad51681ddfa245bc33757e6d75724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  group: {fileID: 11400000, guid: bcfbb9e3b8614a746a1e4d8674351854, type: 2}
   container: {fileID: 1396459270}
   toggleGroup: {fileID: 1396459271}
   dataViewPrefab: {fileID: 114743482776068802, guid: 7f8d8aeb99929a944b97b9c682b2216b,
