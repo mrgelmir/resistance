@@ -4,6 +4,7 @@ using Resistance.Game.Model;
 using Resistance.Helpers;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameScript : MonoBehaviour
 {
@@ -145,6 +146,9 @@ public class GameScript : MonoBehaviour
 				// TODO: Display who won
 				debugInfo.AppendLine("Game is finished");
 				debugInfo.AppendLine("This should show which team won, but it's not implemented yet");
+
+				SceneManager.LoadScene(0);
+
 				break;
 		}
 
