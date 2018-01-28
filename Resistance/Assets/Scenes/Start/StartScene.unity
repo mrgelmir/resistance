@@ -1367,6 +1367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInput: {fileID: 1176345492}
   playerListView: {fileID: 557604365}
+  startButton: {fileID: 2096410055}
 --- !u!4 &1372567390
 Transform:
   m_ObjectHideFlags: 0

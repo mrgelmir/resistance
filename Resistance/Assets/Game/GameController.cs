@@ -47,8 +47,15 @@ public class GameController
 	private Game gameData;
 	private GameState currentState = GameState.Default;
 
-	[System.Obsolete("Let's not use this, unless temporarily")]
+	//[System.Obsolete("Let's not use this, unless temporarily")]
 	public Game GameData { get { return gameData; } }
+
+
+	public bool Initialized
+	{
+		// Quick and dirty
+		get { return gameData != null; }
+	}
 
 	public int LeaderId
 	{
@@ -197,7 +204,7 @@ public class GameController
 		gameData.CurrentMission = null;
 
 		// Check for end of game conditions
-		bool endGame = false;
+		bool endGame = gameData.MissionList.Count >= gameData.NumberOfMissions;
 
 		if (endGame)
 		{
@@ -251,7 +258,7 @@ public class GameController
 	// Helper
 	public void CreateGame()
 	{
-		// Create a game here, this is temporary
+		// Create a game here, this is temporary, should use player count and such
 
 		// Init
 		gameData = new Game()
@@ -272,6 +279,19 @@ public class GameController
 		};
 
 		gameData.NumberOfMissions = gameData.MissionSettingsList.Count;
+	}
+
+	/// <summary>
+	/// Create a mock game in a starting state
+	/// </summary>
+	public void CreateMockGame()
+	{
+		CreateGame();
+		AddPlayer("p1");
+		AddPlayer("p2");
+		AddPlayer("p3");
+		AddPlayer("p4");
+		StartGame();
 	}
 
 	public void StartGame()
@@ -297,7 +317,7 @@ public class GameController
 	
 	public enum GameState
 	{
-		// everything else
+		// Everything else
 		Default,
 		// Leader picks team composition
 		TeamAssembly,
