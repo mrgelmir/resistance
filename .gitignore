@@ -34,3 +34,5 @@ sysinfo.txt
 *.unitypackage
 *.ide-shm
 *.ide-wal
+*.ide
+*.ide
