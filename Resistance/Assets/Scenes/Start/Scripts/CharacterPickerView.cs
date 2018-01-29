@@ -45,6 +45,9 @@ namespace Resistance.Scenes.Start
 
 		private void UpdateView()
 		{
+            // Store first character id, this should be selected
+            string firstId = null;
+
 			// Clear container
 			container.DestroyChildren();
 
@@ -65,8 +68,15 @@ namespace Resistance.Scenes.Start
 					{
 						SetSelectedCharacterID(cd.CharacterID);
 					}
-				});
+				});     
+                
+                if(firstId == null)
+                {
+                    firstId = cd.CharacterID;
+                }
 			}
+
+            SetSelectedCharacterID(firstId);
 		}
 	}
 

@@ -73,13 +73,14 @@ namespace Resistance.Scenes.Start
 			for (int i = 0; i < GameController.Instance.PlayerList.Count; i++)
 			{
 				GameObject player = new GameObject("Text");
-				player.transform.parent = playerListView.transform;
+				player.transform.SetParent(playerListView.transform, false);
 				Text t = player.AddComponent<Text>();
 				t.text = string.Format("Player {0}: {1} | Character: {2} ",
 					(i + 1).ToString(),
 					GameController.Instance.PlayerList[i].PlayerName,
 					GameController.Instance.PlayerList[i].CharacterId);
 				t.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+                t.fontSize = 50;
 			}
 
 			// Enable start button only when three players are created
